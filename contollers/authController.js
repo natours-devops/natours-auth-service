@@ -74,6 +74,16 @@ exports.logout = (req, res) => {
 };
 
 exports.protect = catchAsync(async (req, res, next) => {
+  // Trust x-user-id injected by API Gateway (already validated upstream)
+  if (req.headers['x-user-id']) {
+    const currentUser = await User.findById(req.headers['x-user-id']);
+    if (!currentUser)
+      return next(new AppError('The user belonging to this token does no longer exist', 401));
+    req.user = currentUser;
+    res.locals.user = currentUser;
+    return next();
+  }
+
   let token;
   if (req.headers.authorization?.startsWith("Bearer")) {
     token = req.headers.authorization.split(" ")[1];
