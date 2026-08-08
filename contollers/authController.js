@@ -75,10 +75,15 @@ exports.logout = (req, res) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   // Trust x-user-id injected by API Gateway (already validated upstream)
-  if (req.headers['x-user-id']) {
-    const currentUser = await User.findById(req.headers['x-user-id']);
+  if (req.headers["x-user-id"]) {
+    const currentUser = await User.findById(req.headers["x-user-id"]);
     if (!currentUser)
-      return next(new AppError('The user belonging to this token does no longer exist', 401));
+      return next(
+        new AppError(
+          "The user belonging to this token does no longer exist",
+          401,
+        ),
+      );
     req.user = currentUser;
     res.locals.user = currentUser;
     return next();
@@ -201,5 +206,8 @@ exports.verifyToken = catchAsync(async (req, res, next) => {
 
   res
     .status(200)
-    .json({ status: "success", data: { id: user._id, role: user.role } });
+    .json({
+      status: "success",
+      data: { id: user._id, role: user.role, email: user.email },
+    });
 });
