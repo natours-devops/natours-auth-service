@@ -7,6 +7,9 @@ const router = express.Router();
 // Internal route used by API Gateway to validate JWT
 router.post('/verify-token', authController.verifyToken);
 
+// Internal route used by Tour Service to fetch guide details
+router.get('/internal/:id', userController.getUser);
+
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);
