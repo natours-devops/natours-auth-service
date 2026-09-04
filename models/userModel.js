@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
-//name,email,photo,passord,passwordConfirm
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -63,9 +62,8 @@ userSchema.pre('save', async function (next) {
   next();
 });
 userSchema.pre('save', function (next) {
-  if (!this.isModified('password') || this.isNew) return next(); //password eka modified karala naththam and doucment eka aluth newenenm that means like entering a new user,this funtion would be escaped.
-
-  this.passwordChangeAt = Date.now() - 1000; //redeced 1000 becaused ome times saving to database is slower than creating a new jwd token
+  if (!this.isModified('password') || this.isNew) return next(); 
+  this.passwordChangeAt = Date.now() - 1000; 
   next();
 });
 userSchema.methods.correctPassword = async function (candidatePass, userPass) {
